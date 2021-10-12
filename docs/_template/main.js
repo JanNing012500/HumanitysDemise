@@ -195,6 +195,89 @@ const EnemyState = {
     DOWN: "DOWN"
 };
 
+function shootall()
+ {fBullets.push({
+    pos: vec(5, 160)
+    });
+
+    fBullets.push({
+        pos: vec(10, 160)
+        });
+
+        fBullets.push({
+            pos: vec(15, 160)
+            });
+
+            fBullets.push({
+                pos: vec(20, 160)
+                });
+
+                fBullets.push({
+                    pos: vec(25, 160)
+                    });
+
+                    fBullets.push({
+                        pos: vec(30, 160)
+                        });
+                        fBullets.push({
+                            pos: vec(35, 160)
+                            });
+                
+                            fBullets.push({
+                                pos: vec(40, 160)
+                                });
+                
+                                fBullets.push({
+                                    pos: vec(45, 160)
+                                    });
+                
+                                    fBullets.push({
+                                        pos: vec(50, 160)
+                                        });
+                
+                                        fBullets.push({
+                                            pos: vec(55, 160)
+                                            });
+                
+                                            fBullets.push({
+                                                pos: vec(60, 160)
+                                                });
+                                                fBullets.push({
+                                                    pos: vec(65, 160)
+                                                    });
+                                        
+                                                    fBullets.push({
+                                                        pos: vec(70, 160)
+                                                        });
+                                        
+                                                        fBullets.push({
+                                                            pos: vec(75, 160)
+                                                            });
+                                        
+                                                            fBullets.push({
+                                                                pos: vec(80, 160)
+                                                                });
+                                        
+                                                                fBullets.push({
+                                                                    pos: vec(85, 160)
+                                                                    });
+                                        
+                                                                    fBullets.push({
+                                                                        pos: vec(90, 160)
+                                                                        });
+                                                                        fBullets.push({
+                                                                            pos: vec(95, 160)
+                                                                            });
+                                                                            fBullets.push({
+                                                                                pos: vec(100, 160)
+                                                                                });
+                                                                            }
+
+
+
+
+
+
 function update() {
     if (!ticks) {
         player = {
@@ -246,14 +329,12 @@ function update() {
         fBullets.push({ pos: vec(player.pos.x, player.pos.y) });
     }
 
-    if (input.isPressed) {
-        if (input.pos.x >= G.WIDTH/2) {
-            player.pos.x += G.PLAYER_MOVE_SPD;
-        } else {
-            player.pos.x -= G.PLAYER_MOVE_SPD;
-        }
-    }
+
+    //MOVEMENT
+    player.pos = vec(input.pos.x, G.HEIGHT * 0.9);
     player.pos.x = clamp(player.pos.x, G.WIDTH * 0.1, G.WIDTH * 0.9);
+    ///
+    
 
     fBullets.forEach((fb) => {
         fb.pos.y -= G.FBULLET_SPEED;
