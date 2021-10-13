@@ -332,8 +332,11 @@ function update() {
         regenerate();
         waveCount++;
         bigbulletcount+=5;
-        //G.PLAYER_LIFE +=5; give player more hp after each round
-        G.PLAYER_FIRE_RATE -=3; //change to -1; //player firerate increase per round
+        G.PLAYER_LIFE +=5; //give player more hp after each round
+        if(G.PLAYER_FIRE_RATE>=3)
+        {
+        G.PLAYER_FIRE_RATE -=3; //change to -1 //player firerate increase per round
+        }
         if (ticks > 60) addScore(waveCount*10, player.pos);
     }
 
@@ -482,7 +485,11 @@ function update() {
         const isCollidingWithBigBullet =char(addWithCharCode("c", floor(ticks/G.ENEMY_ANIM_SPD)%2), e.pos)
         .isColliding.char.f;
         
-        if(isCollidingWithBigBullet)e.hp--;
+        if(isCollidingWithBigBullet){
+            //color("yellow");
+            //particle(e.pos, 10, 5);
+            e.hp=e.hp-20;
+        }
 
         const isCollidingWithPlayer =
             char(addWithCharCode("c", floor(ticks/G.ENEMY_ANIM_SPD)%2), e.pos)
@@ -501,13 +508,13 @@ function update() {
             play("lucky");
         }
 
-        if (e.hp === 0) {
+        if (e.hp <= 0) {
             addScore(waveCount, e.pos);
             play("explosion");
             particle(e.pos, 30, 7);
         }
 
-        return (e.hp === 0 || e.pos.y > G.HEIGHT);
+        return (e.hp<0||e.hp === 0 || e.pos.y > G.HEIGHT);
     });
     
  
@@ -575,7 +582,7 @@ function update() {
     color("red");
     //text("enemy hp:"+G.ENEMY_HP.toString(),3,20);  //shows enemy hp 
     
-    //text("FIRE RATE:"+G.PLAYER_FIRE_RATE.toString(),3,30);  //shows player firerate 
+    text("FIRE RATE:"+G.PLAYER_FIRE_RATE.toString(),3,30);  //shows player firerate 
 
     text("PLAYER HP:"+G.PLAYER_LIFE.toString(),3,10);  //shows player hp
 
