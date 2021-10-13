@@ -100,6 +100,12 @@ options = {
 
 /**
  * @typedef {{
+ * pos: Vector
+ * }} BigBullet
+ */
+
+/**
+ * @typedef {{
  * pos: Vector,
  * hp: number,
  * state: EnemyState,
@@ -135,6 +141,11 @@ let player;
  * @type { FBullet [] }
  */
 let fBullets;
+
+/**
+ * @type {BigBullet [] }
+ */
+let bigBullets;
 
 /**
  * @type { Enemy [] }
@@ -197,6 +208,10 @@ const EnemyState = {
     RIGHT: "RIGHT",
     DOWN: "DOWN"
 };
+
+let shotX;
+let shotSize;
+let charge;
 
 function shootall()
  {fBullets.push({
@@ -287,6 +302,7 @@ function update() {
             firingCooldown: 0
         };
         fBullets = [];
+        bigBullets = [];
         enemies = [];
         eBullets = [];
         stars = times(rndi(4, 7), () => {
@@ -305,6 +321,9 @@ function update() {
             bg: "white",
             fg: "white"
         };
+
+        shotX = shotSize = undefined;
+        charge = 0;
     
   }
   
@@ -353,6 +372,22 @@ function update() {
 
         fBullets.push({ pos: vec(player.pos.x, player.pos.y) });
       
+    } else if (player.firingCooldown < 0 && input.isPressed) {
+        player.firingCooldown = G.PLAYER_FIRE_RATE;
+
+
+      //muzzle flash
+      particle(
+      player.pos.x,  // x coordinate
+      player.pos.y, // y coordinate
+      5, // The number of particles
+      1, // The speed of the particles
+      -PI/2, // The emitting angle
+      PI/4  // The emitting width
+      );
+
+
+        bigBullets.push({ pos: vec(player.pos.x, player.pos.y) });
     }
 
 
@@ -366,9 +401,6 @@ function update() {
   PI/2, // The emitting angle (originally 2)
   PI/5  // The emitting width
   );
-
-
-
  
     //MOVEMENT
     player.pos = vec(input.pos.x, G.HEIGHT * 0.9);
@@ -380,6 +412,11 @@ function update() {
         fb.pos.y -= G.FBULLET_SPEED;
         char("b", fb.pos);
     });
+
+    bigBullets.forEach((bb) => {
+        bb.pos.y -= G.FBULLET_SPEED;
+        char("f", bb.pos);
+    } )
 
     enemyFiringCooldown--;
     if (enemyFiringCooldown <= 0) {
