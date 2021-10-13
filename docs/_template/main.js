@@ -176,13 +176,6 @@ let waveCount;
  * @type { Color[] }
  */
  const C = [
-    "red",
-    "green",
-    "blue",
-    "yellow",
-    "black",
-    "purple",
-    "cyan",
     "light_red",
     "light_green",
     "light_blue",
@@ -292,7 +285,7 @@ function shootall()
                                                                             }
 
 
-
+var bigbulletcount=5; //player starts off with 5 big shots
 function update() {
     if (!ticks) {
         player = {
@@ -338,6 +331,7 @@ function update() {
     if (enemies.length === 0) {
         regenerate();
         waveCount++;
+        bigbulletcount+=5;
         //G.PLAYER_LIFE +=5; give player more hp after each round
         G.PLAYER_FIRE_RATE -=3; //change to -1; //player firerate increase per round
         if (ticks > 60) addScore(waveCount*10, player.pos);
@@ -372,8 +366,10 @@ function update() {
 
         fBullets.push({ pos: vec(player.pos.x, player.pos.y) });
       
-    } else if (player.firingCooldown < 0 && input.isPressed) {
+    } else if (player.firingCooldown < 0 && input.isPressed && bigbulletcount>0) {
         player.firingCooldown = G.PLAYER_FIRE_RATE;
+
+        bigbulletcount--;
 
 
       //muzzle flash
@@ -481,11 +477,18 @@ function update() {
             e.speed = G.ENEMY_MOVE_SPD_HORIZONTAL
                 + difficulty * G.DIFFICULTY_MODIFIER;
         }
+        
+        
+        const isCollidingWithBigBullet =char(addWithCharCode("c", floor(ticks/G.ENEMY_ANIM_SPD)%2), e.pos)
+        .isColliding.char.f;
+        
+        if(isCollidingWithBigBullet)e.hp--;
 
         const isCollidingWithPlayer =
             char(addWithCharCode("c", floor(ticks/G.ENEMY_ANIM_SPD)%2), e.pos)
                 .isColliding.char.a;
-        const isCollidingWithFBullet =  
+        
+                const isCollidingWithFBullet =  
             char(addWithCharCode("c", floor(ticks/G.ENEMY_ANIM_SPD)%2), e.pos)
                 .isColliding.char.b;
 
@@ -520,6 +523,13 @@ function update() {
             particle(eb.pos) //destroys enemy bullet 
         }
         
+        const isCollidingWithBigBullet =char("e",eb.pos).isColliding.char.f; //removes enemy bullet if it touches bit bullet
+        if(isCollidingWithBigBullet){
+            play("hit");
+            particle(eb.pos) //destroys enemy bullet 
+        }
+
+
         const isCollidingWithPlayer = char("e", eb.pos).isColliding.char.a;
         if (isCollidingWithPlayer) {
             //end();
@@ -529,7 +539,7 @@ function update() {
           
         }
 
-        return ( isCollidingWithFBullet||!eb.pos.isInRect(0, 0, G.WIDTH, G.HEIGHT));
+        return (isCollidingWithBigBullet|| isCollidingWithFBullet||!eb.pos.isInRect(0, 0, G.WIDTH, G.HEIGHT));
     });
 
 
@@ -568,6 +578,8 @@ function update() {
     //text("FIRE RATE:"+G.PLAYER_FIRE_RATE.toString(),3,30);  //shows player firerate 
 
     text("PLAYER HP:"+G.PLAYER_LIFE.toString(),3,10);  //shows player hp
+
+    text("MISSLE COUNT:"+bigbulletcount.toString(),3,20);
 
     function regenerate() {
 
