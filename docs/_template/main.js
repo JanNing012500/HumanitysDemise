@@ -54,6 +54,7 @@ const G = {
     PLAYER_LIFE: 30,
     PLAYER_MOVE_SPD: 1,
     FBULLET_SPEED: 5,
+    BBULLET_SPEED: 2,
 
     ENEMY_FIRE_RATE: 60,
     ENEMY_HP: 1,
@@ -326,6 +327,7 @@ function update() {
       G.PLAYER_LIFE=50;
       G.PLAYER_FIRE_RATE =30;
       G.ENEMY_HP = 1;
+      bigbulletcount = 5;
     }
 
     if (enemies.length === 0) {
@@ -333,7 +335,7 @@ function update() {
         waveCount++;
         bigbulletcount+=5;
         G.PLAYER_LIFE +=5; //give player more hp after each round
-        if(G.PLAYER_FIRE_RATE>=3)
+        if(G.PLAYER_FIRE_RATE>=3 && waveCount % 2 == 0)
         {
         G.PLAYER_FIRE_RATE -=3; //change to -1 //player firerate increase per round
         }
@@ -370,7 +372,7 @@ function update() {
         fBullets.push({ pos: vec(player.pos.x, player.pos.y) });
       
     } else if (player.firingCooldown < 0 && input.isPressed && bigbulletcount>0) {
-        player.firingCooldown = G.PLAYER_FIRE_RATE;
+        player.firingCooldown = 30;
 
         bigbulletcount--;
 
@@ -413,7 +415,7 @@ function update() {
     });
 
     bigBullets.forEach((bb) => {
-        bb.pos.y -= G.FBULLET_SPEED;
+        bb.pos.y -= G.BBULLET_SPEED;
         char("f", bb.pos);
     } )
 
@@ -582,11 +584,11 @@ function update() {
     color("red");
     //text("enemy hp:"+G.ENEMY_HP.toString(),3,20);  //shows enemy hp 
     
-    text("FIRE RATE:"+G.PLAYER_FIRE_RATE.toString(),3,30);  //shows player firerate 
+    //text("FIRE RATE:"+G.PLAYER_FIRE_RATE.toString(),3,30);  //shows player firerate 
 
-    text("PLAYER HP:"+G.PLAYER_LIFE.toString(),3,10);  //shows player hp
+    text("HP:"+G.PLAYER_LIFE.toString(),3,10);  //shows player hp
 
-    text("MISSLE COUNT:"+bigbulletcount.toString(),3,20);
+    text("MISSLES:"+bigbulletcount.toString(),3,20);
 
     function regenerate() {
 
